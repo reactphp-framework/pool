@@ -42,7 +42,7 @@ abstract class AbstractConnectionPool implements ConnectionPoolInterface
     }
 
 
-    public function getConnection()
+    public function getConnection($params = null)
     {
         if ($this->closed) {
             return reject(new Exception('pool is closed'));
@@ -64,7 +64,7 @@ abstract class AbstractConnectionPool implements ConnectionPoolInterface
 
         if ($this->current_connections < $this->max_connections) {
             $this->current_connections++;
-            return resolve($this->createConnection());
+            return resolve($this->createConnection($params = null));
         }
 
         if ($this->max_wait_queue && $this->wait_queue->count() >= $this->max_wait_queue) {
@@ -208,5 +208,5 @@ abstract class AbstractConnectionPool implements ConnectionPoolInterface
         $connection->close();
     }
 
-    abstract protected function createConnection();
+    abstract protected function createConnection($params = null);
 }
